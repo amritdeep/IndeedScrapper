@@ -10,6 +10,13 @@ def create_file(file, variable)
 	out_file.close	
 end
 
+# READ INPUT FROM COMMAND
+puts "What Job Do you Want ? (Job Title)"
+job_title = gets.chomp
+puts "Where Do you Want ? (Location)"
+location = gets.chomp
+
+
 pwd = Dir.pwd
 doc = Nokogiri::HTML(open("http://www.indeed.com/"))
 tx = Nokogiri::HTML(open("http://www.indeed.com/jobs?q=software+engineer&l=Texas"))
