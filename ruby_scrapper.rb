@@ -62,7 +62,18 @@ result=JSON.pretty_generate(results)
 
 puts result
 
+## Handle on file
+pwd = Dir.pwd
+Dir.mkdir 'Data' unless Dir.glob 'Data'
+Dir.chdir("#{pwd}/Data")
 File.open('indeed.json', 'w') { |file| file.write(result) }
+chdir = Dir.pwd
+if File.exist?('indeed.json')
+	FileUtils.mv("#{chdir}/indeed.json", "#{chdir}/#{Time.now.strftime("%Y%M%d%H%M")}_indeed.json")
+	File.open('indeed.json', 'w') { |file| file.write(result) }
+end
+
+# File.open('indeed.json', 'w') { |file| file.write(result) }
 
 
 ## Create file or move it
@@ -70,10 +81,11 @@ File.open('indeed.json', 'w') { |file| file.write(result) }
 
 # # Dir.mkdir 'Data' unless Dir.glob 'Data'
 
-# if File.exist?('output.json')
-# 	# FileUtils.mkdir_p 'Data'
-# 	FileUtils.mv("#{pwd}/output.json", "#{pwd}/#{Time.now.strftime("%Y%M%d%H%M")}_output.json")
-# 	create_file('output.json', title)
+# if File.exist?('indeed.json')
+# 	FileUtils.mkdir_p 'Data'
+# 	FileUtils.mv("#{pwd}/indeed.json", "#{pwd}/#{Time.now.strftime("%Y%M%d%H%M")}_indeed.json")
+# 	File.open('indeed.json', 'w') { |file| file.write(result) }
+# 	# create_file('output.json', title)
 # end
 
 # create_file('output.txt', title)
