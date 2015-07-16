@@ -1,6 +1,7 @@
 require "nokogiri"
 require "open-uri"
-require "fileutils"
+require 'json'
+	
 require "time"
 require "pry"
 
@@ -26,28 +27,55 @@ puts "You are searching for #{job_title} in #{location}"
 job_title=job_title.sub(/ /, '+') if job_title.match(/\s/)
 location=location.sub(/ /, '+')  if location.match(/\s/)
 
-puts "JOB : #{job_title} || LOC : #{location}"
+puts "JOB : #{job_title} || LOC : #{location}" 
 
 ## Take input in indeed site to enter the value
 # doc = Nokogiri::HTML(open("http://www.indeed.com/"))	
 url = Nokogiri::HTML(open("http://www.indeed.com/jobs?q=#{job_title}&l=#{location}"))
-data = url.css("div.row.result").collect {|node| node.text.strip}
+# data = url.css("div.row.result").collect {|node| node.text.strip}
 
 ## Data from Indeed search URL
-title = url.css('//h2/a').collect { |node| node.text.strip }
-company = url.xpath('//span[@class="company"]').collect { |node| node.text.strip }
-address = url.xpath('//span[@class="location"]').collect {|node| node.text.strip}
-description = url.xpath('//span[@class="summary"]').collect {|node| node.text.strip}
+# data = url.xpath('//div[@class="  row  result"]').collect { |node| node.text.strip }
+# data = url.xpath('//div[@id="resultsCol"]')
+
+data = url.xpath('//div[@class="  row  result"]')
+
+results = []
+
+data.each do |data|
+	id=data['id'].split('p_').last
+	title=data.css('h2 a').text.strip
+	company=data.css('.company').text.strip
+	location=data.css('.location').text.strip
+	summary=data.css('.summary').text.strip
+
+	results.push(
+		id: id,
+		title: title,
+		company: company,
+		location: location,
+		summary: summary
+		)
+end
+
+result=JSON.pretty_generate(results)
+
+puts result
+
 
 ## Create file or move it
 pwd = Dir.pwd
-if File.exist?('output.txt')
+
+# Dir.mkdir 'Data' unless Dir.glob 'Data'
+
+if File.exist?('output.json')
 	# FileUtils.mkdir_p 'Data'
-	FileUtils.mv("#{pwd}/output.txt", "#{pwd}/#{Time.now.strftime("%Y%M%d%H%M")}_output.txt")
-	create_file('output.txt', title)
-else
-	create_file('output.txt', title)
+	FileUtils.mv("#{pwd}/output.json", "#{pwd}/#{Time.now.strftime("%Y%M%d%H%M")}_output.json")
+	create_file('output.json', title)
 end
+
+# create_file('output.txt', title)
+
  
 
 
