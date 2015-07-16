@@ -3,23 +3,16 @@ require "open-uri"
 require 'json'
 	
 require "time"
-require "pry"
-
-private
-def create_file(file, variable)
-	out_file = File.new(file, "w")
-	out_file.puts(variable)
-	out_file.close	
-end
+# require "pry"
 
 ## Read Input from Command
-# puts "Reading Data From Input"
-# puts "What Job Do you Want ? (Job Title)"
-# job_title = gets.chomp
-# puts "Where Do you Want ? (Location)"
-# location = gets.chomp
-job_title="software developer"
-location="Texas"
+puts "Reading Data From Input"
+puts "What Job Do you Want ? (Job Title)"
+job_title = gets.chomp
+puts "Where Do you Want ? (Location)"
+location = gets.chomp
+# job_title="software developer"
+# location="Texas"
 
 puts "You are searching for #{job_title} in #{location}"
 
@@ -30,13 +23,7 @@ location=location.sub(/ /, '+')  if location.match(/\s/)
 puts "JOB : #{job_title} || LOC : #{location}" 
 
 ## Take input in indeed site to enter the value
-# doc = Nokogiri::HTML(open("http://www.indeed.com/"))	
 url = Nokogiri::HTML(open("http://www.indeed.com/jobs?q=#{job_title}&l=#{location}"))
-# data = url.css("div.row.result").collect {|node| node.text.strip}
-
-## Data from Indeed search URL
-# data = url.xpath('//div[@class="  row  result"]').collect { |node| node.text.strip }
-# data = url.xpath('//div[@id="resultsCol"]')
 
 data = url.xpath('//div[@class="  row  result"]')
 
@@ -64,7 +51,8 @@ puts result
 
 ## Handle on file
 pwd = Dir.pwd
-Dir.mkdir 'Data' unless Dir.glob 'Data'
+# Dir.mkdir 'Data' unless Dir.glob 'Data'
+Dir.mkdir 'Data'
 Dir.chdir("#{pwd}/Data")
 File.open('indeed.json', 'w') { |file| file.write(result) }
 chdir = Dir.pwd
@@ -73,22 +61,7 @@ if File.exist?('indeed.json')
 	File.open('indeed.json', 'w') { |file| file.write(result) }
 end
 
-# File.open('indeed.json', 'w') { |file| file.write(result) }
 
-
-## Create file or move it
-# pwd = Dir.pwd
-
-# # Dir.mkdir 'Data' unless Dir.glob 'Data'
-
-# if File.exist?('indeed.json')
-# 	FileUtils.mkdir_p 'Data'
-# 	FileUtils.mv("#{pwd}/indeed.json", "#{pwd}/#{Time.now.strftime("%Y%M%d%H%M")}_indeed.json")
-# 	File.open('indeed.json', 'w') { |file| file.write(result) }
-# 	# create_file('output.json', title)
-# end
-
-# create_file('output.txt', title)
 
  
 
