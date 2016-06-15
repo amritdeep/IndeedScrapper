@@ -1,10 +1,8 @@
-require "nokogiri"
+require 'csv'
 require "open-uri"
-require 'pry'
+require "nokogiri"
 
-class Indeed
-	# attr_accessor :job, :location
-	
+class Indeed	
 	def initialize(job, location)
 		@job = job
 		@location = location
@@ -20,7 +18,6 @@ class Indeed
 
 
 	private
-
 	## Check title and location contain space or not	
 	def check_space
 		@job = @job.split(" ").join("+")
@@ -29,6 +26,7 @@ class Indeed
 
 	## Exact the Data
 	def extract_data(data)
+		puts "Extacting Data from Indeed"
 		results = []
 		data.each do |data|
 			id=data['id'].split('p_').last
@@ -37,8 +35,22 @@ class Indeed
 			location=data.css('.location').text.strip
 			summary=data.css('.summary').text.strip
 			results.push(id: id, title: title, company: company, location: location, summary: summary)
-			puts results
+			write_to_csv(results)
 		end	
+	end
+
+	## Write to CSV file
+	def write_to_csv(output)
+		CSV.open('indeed.csv', 'wb') do |csv|
+			output.each do |out|
+				id = out[:id]
+				title = out[:title]
+				company = out[:company]
+				location = out[:location]
+				summary = out[:summary]
+				csv << [id, title, company, location, summary]
+			end
+		end
 	end
 
 end
