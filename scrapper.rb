@@ -3,7 +3,7 @@ require "open-uri"
 require 'json'
 	
 require "time"
-# require "pry"
+require "pry"
 
 ## Read Input from Command
 puts "Reading Data From Input"
@@ -17,8 +17,11 @@ location = gets.chomp
 puts "You are searching for #{job_title} in #{location}"
 
 ## Check title and location contain space or not
-job_title=job_title.sub(/ /, '+') if job_title.match(/\s/)
-location=location.sub(/ /, '+')  if location.match(/\s/)
+# job_title=job_title.sub(/ /, '+') if job_title.match(/\s/)
+# location=location.sub(/ /, '+')  if location.match(/\s/)
+
+job_title = job_title.split(" ").join("+")
+location = location.split(" ").join("+")
 
 puts "JOB : #{job_title} || LOC : #{location}" 
 
