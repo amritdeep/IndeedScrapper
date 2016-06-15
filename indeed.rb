@@ -1,6 +1,7 @@
 require 'csv'
 require "open-uri"
 require "nokogiri"
+require 'pry'
 
 class Indeed	
 	def initialize(job, location)
@@ -34,13 +35,15 @@ class Indeed
 			company=data.css('.company').text.strip
 			location=data.css('.location').text.strip
 			summary=data.css('.summary').text.strip
-			results.push(id: id, title: title, company: company, location: location, summary: summary)
+			date=data.css('.date').text.strip
+			results.push(id: id, title: title, company: company, location: location, summary: summary, date: date)
 			write_to_csv(results)
 		end	
 	end
 
 	## Write to CSV file
 	def write_to_csv(output)
+		puts "Saving data to CSV file i.e indeed.csv file"
 		CSV.open('indeed.csv', 'wb') do |csv|
 			output.each do |out|
 				id = out[:id]
@@ -48,7 +51,8 @@ class Indeed
 				company = out[:company]
 				location = out[:location]
 				summary = out[:summary]
-				csv << [id, title, company, location, summary]
+				date = out[:date]
+				csv << [id, title, company, location, summary, date]
 			end
 		end
 	end
